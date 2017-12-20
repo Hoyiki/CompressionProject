@@ -173,7 +173,7 @@ void file_meta_str(char * abs, char *root, char * out, long long position){
 
 ofstream outputFile;
 char *input;
-
+string all_metadata;
 
 
 
@@ -228,10 +228,15 @@ void list ( char * name){
             
             char charpointer[sizeof(meta_file)];
             file_meta_str(newname, input, charpointer, position);
-            print_meta(meta_from_string(charpointer));
+            //print_meta(meta_from_string(charpointer));
+            
+            string a;
+            a = string(charpointer);
+            
+            all_metadata += a;
+            
         }
 
-        
         free ( newname );
         newname = NULL ;
         
@@ -272,11 +277,15 @@ int main(int argc, const char * argv[]) {
     
     outputFile.write(reinterpret_cast<char*>(&header),sizeof(header));
     
+    all_metadata = "";
+    
     list(input);
     
-    header = outputFile.tellp();
+    header = outputFile.tellp(); //tell position of where the metadata will be
     
-    cout << header << endl;
+    char all_meta_char[all_metadata.length()];
+    strcpy(all_meta_char, all_metadata.c_str());
+    outputFile.write(all_meta_char, sizeof(all_meta_char));
     
     char buffer [sizeof(long long)];
     sprintf(buffer, "%llx", header);

@@ -94,6 +94,7 @@ struct meta_file{
     char group[200];
     int size;
     int inode;
+    long long position;
 };
 
 void recreate_file(meta_file meta){
@@ -114,6 +115,7 @@ void print_meta(meta_file meta){
     printf("File Owner Name: \t%s \n",meta.owner);
     printf("File Group Name: \t%s \n",meta.group);
     printf("File Size: \t\t%d bytes\n",meta.size);
+    printf("File position: \t\t%lld bytes\n",meta.position);
     printf("File inode: \t\t%d\n",meta.inode);
     printf("File Permissions: \t");
     printf( (S_ISDIR(meta.mode)) ? "d" : "-");
@@ -130,7 +132,7 @@ void print_meta(meta_file meta){
     printf("The file %s a symbolic link\n", (S_ISLNK(meta.mode)) ? "is" : "is not");
 }
 
-void file_meta_str(char * abs, char *root, char * out){
+void file_meta_str(char * abs, char *root, char * out, long long position){
     int abs_size = strlen(abs);
     int root_size = strlen(root);
     meta_file new_meta;
@@ -161,6 +163,8 @@ void file_meta_str(char * abs, char *root, char * out){
     strcpy(new_meta.group, getgrgid(fileStat.st_gid)->gr_name);
     new_meta.size = fileStat.st_size;
     new_meta.inode = fileStat.st_ino;
+    
+    new_meta.position = position;
     
     memcpy(out, &new_meta, sizeof(meta_file));   
 }
@@ -218,11 +222,12 @@ void list ( char * name){
             //input file into stream
             
             long long position = outputFile.tellp(); //beginning position of the file
+            
             ifstream inputFile (newname, fstream::binary);
             outputFile << inputFile.rdbuf();
             
             char charpointer[sizeof(meta_file)];
-            file_meta_str(newname, input, charpointer);
+            file_meta_str(newname, input, charpointer, position);
             print_meta(meta_from_string(charpointer));
         }
 

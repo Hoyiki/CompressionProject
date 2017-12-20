@@ -241,7 +241,28 @@ void list ( char * name){
 
 
 int main(int argc, const char * argv[]) {
-    
+    if (argc < 2)
+        return 0;
+
+    char * archive = argv[2];
+    char * input[argc - 2];
+
+    if (!((string)argv[argcount]).compare("-c")){
+        //compress
+    } else if(!((string)argv[argcount]).compare("-a")){
+        //append
+    } else if(!((string)argv[argcount]).compare("-x")){
+        //extract
+    } else if(!((string)argv[argcount]).compare("-m")){
+        //print meta
+    } else if(!((string)argv[argcount]).compare("-p")){
+        //print hierarchy
+    }
+    int i = 0;
+    for (int argcount = 2; argcount < argc; argcount++){
+        input[i] = argv[argcount];
+    }
+
     input = "/Users/MotaWolley/Desktop/testingFolder";
     char *output = "/Users/MotaWolley/Desktop/haha";
     
